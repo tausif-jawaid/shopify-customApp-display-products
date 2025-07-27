@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Page, Spinner, LegacyCard, Grid } from "@shopify/polaris";
+import { Page, Spinner, LegacyCard, Grid, Button } from "@shopify/polaris";
 
 export function Orders() {
   const [orders, setOrders] = useState([]);
@@ -26,8 +26,42 @@ export function Orders() {
     fetchOrders();
   }, []);
 
+  const exportToCSV = () => {
+    const headers = ["Order ID", "Customer Name", "Total Amount", "Currency", "Payment Status"];
+    const rows = orders.map(order => [
+      order.name,
+      order.customerName,
+      order.amount,
+      order.currency,
+      order.displayFinancialStatus,
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(value => `"${value}"`).join(",")),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute("href", url);
+    link.setAttribute("download", "latest_orders.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <Page title="Latest Orders">
+    <Page
+      title="Latest Orders"
+      primaryAction={{
+        content: "Export CSV",
+        onAction: exportToCSV,
+        disabled: loading || orders.length === 0,
+      }}
+    >
       {loading ? (
         <div style={{ display: "flex", justifyContent: "center", paddingTop: 50 }}>
           <Spinner accessibilityLabel="Loading orders" size="large" />
@@ -37,7 +71,7 @@ export function Orders() {
           {orders.length === 0 ? (
             <p style={{ textAlign: "center" }}>No orders found.</p>
           ) : (
-            <Grid columns={{ xs: 1, sm: 2, md: 3, lg: 3 }}>
+            <Grid columns={{ xs: 1, sm: 2, md: 3, lg: 3 }} gap="4">
               {orders.map((order) => (
                 <Grid.Cell key={order.id}>
                   <LegacyCard title={`Order ${order.name}`} sectioned>

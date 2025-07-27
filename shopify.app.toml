@@ -1,0 +1,23 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "63fb6b9ddf2ce0c77ad03a36067b0b90"
+name = "display-products"
+handle = "display-products"
+application_url = "https://regional-broadcasting-herbs-weekends.trycloudflare.com"
+embedded = true
+
+[build]
+include_config_on_deploy = true
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2025-07"
+
+[access_scopes]
+scopes = "read_products,write_products,read_orders,read_customers"
+
+[auth]
+redirect_urls = ["https://regional-broadcasting-herbs-weekends.trycloudflare.com/auth/callback", "https://regional-broadcasting-herbs-weekends.trycloudflare.com/auth/shopify/callback", "https://regional-broadcasting-herbs-weekends.trycloudflare.com/api/auth/callback"]
+
+[pos]
+embedded = false

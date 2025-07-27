@@ -1,1 +1,0 @@
-# shopify-customApp-display-products
